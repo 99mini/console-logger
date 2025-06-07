@@ -17,7 +17,7 @@ const config = {
       tsconfig: './tsconfig.json',
       sourceMap: true,
       inlineSources: true,
-      declaration: false, // 타입 선언 파일 생성 비활성화
+      declaration: false,
     }),
   ],
 };

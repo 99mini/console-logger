@@ -16,17 +16,17 @@ export interface LogFormatOptions {
    * Include timestamp in log messages
    */
   timestamp?: boolean;
-  
+
   /**
    * Include log level in log messages
    */
   level?: boolean;
-  
+
   /**
    * Custom prefix for log messages
    */
   prefix?: string;
-  
+
   /**
    * Custom colors for different log levels
    */
@@ -41,12 +41,12 @@ export interface LoggerOptions {
    * Minimum log level to display
    */
   minLevel?: LogLevel;
-  
+
   /**
    * Formatting options for log messages
    */
   format?: LogFormatOptions;
-  
+
   /**
    * Whether to enable logging
    */
@@ -63,40 +63,40 @@ export interface ILogger {
    * @param args - Additional arguments to log
    */
   debug(message: unknown, ...args: unknown[]): void;
-  
+
   /**
    * Log an info message
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
   info(message: unknown, ...args: unknown[]): void;
-  
+
   /**
    * Log a warning message
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
   warn(message: unknown, ...args: unknown[]): void;
-  
+
   /**
    * Log an error message
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
   error(message: unknown, ...args: unknown[]): void;
-  
+
   /**
    * Set the minimum log level
    * @param level - The minimum log level
    */
   setLevel(level: LogLevel): void;
-  
+
   /**
    * Enable or disable logging
    * @param enabled - Whether logging is enabled
    */
   setEnabled(enabled: boolean): void;
-  
+
   /**
    * Update logger options
    * @param options - New logger options

@@ -1,6 +1,6 @@
 /**
  * Console Logger - A flexible console logging library
- * 
+ *
  * Supports both object-oriented and functional programming paradigms
  */
 

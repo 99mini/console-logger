@@ -1,4 +1,4 @@
-name: Pull Request 테스트
+name: Pull Request Tests
 
 on:
   pull_request:
@@ -9,32 +9,32 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: 코드 체크아웃
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Node.js 설정
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
 
-      - name: PNPM 설치
+      - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 10.x
 
-      - name: 의존성 설치
+      - name: Install dependencies
         run: pnpm install
 
-      - name: 린트 실행
+      - name: Run linting
         run: pnpm lint
 
-      - name: 테스트 실행
+      - name: Run tests
         run: pnpm test
 
-      - name: 빌드 실행
+      - name: Build package
         run: pnpm build
 
-      - name: 테스트 커버리지 업로드
+      - name: Upload test coverage
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

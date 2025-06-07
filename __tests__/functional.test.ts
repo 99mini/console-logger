@@ -11,15 +11,15 @@ import {
   LogLevel,
 } from '../src';
 
-describe('함수형 API', () => {
+describe('Functional API', () => {
   let originalConsole: typeof console;
   let mockConsole: Record<string, jest.Mock>;
 
   beforeEach(() => {
-    // 원래 콘솔 메서드 저장
+    // Store original console methods
     originalConsole = { ...console };
 
-    // 콘솔 메서드 모킹
+    // Mock console methods
     mockConsole = {
       debug: jest.fn(),
       info: jest.fn(),
@@ -32,45 +32,45 @@ describe('함수형 API', () => {
     console.warn = mockConsole.warn;
     console.error = mockConsole.error;
 
-    // 테스트 간 독립성을 위해 기본 로거 초기화
+    // Reset default logger for test isolation
     resetDefaultLogger();
   });
 
   afterEach(() => {
-    // 원래 콘솔 메서드 복원
+    // Restore original console methods
     console.debug = originalConsole.debug;
     console.info = originalConsole.info;
     console.warn = originalConsole.warn;
     console.error = originalConsole.error;
   });
 
-  test('기본 함수형 API가 작동해야 합니다', () => {
-    info('정보 메시지');
-    warn('경고 메시지');
-    error('에러 메시지');
-    debug('디버그 메시지');
+  test('basic functional API should work', () => {
+    info('info message');
+    warn('warning message');
+    error('error message');
+    debug('debug message');
 
     expect(mockConsole.info).toHaveBeenCalled();
     expect(mockConsole.warn).toHaveBeenCalled();
     expect(mockConsole.error).toHaveBeenCalled();
-    expect(mockConsole.debug).not.toHaveBeenCalled(); // 기본 레벨은 INFO
+    expect(mockConsole.debug).not.toHaveBeenCalled(); // Default level is INFO
   });
 
-  test('setLevel 함수가 로그 레벨을 변경해야 합니다', () => {
+  test('setLevel function should change log level', () => {
     setLevel(LogLevel.DEBUG);
-    debug('디버그 메시지');
+    debug('debug message');
 
     expect(mockConsole.debug).toHaveBeenCalled();
   });
 
-  test('setEnabled 함수가 로깅을 비활성화해야 합니다', () => {
+  test('setEnabled function should disable logging', () => {
     setEnabled(false);
-    info('정보 메시지');
+    info('info message');
 
     expect(mockConsole.info).not.toHaveBeenCalled();
   });
 
-  test('configure 함수가 로거 옵션을 업데이트해야 합니다', () => {
+  test('configure function should update logger options', () => {
     configure({
       minLevel: LogLevel.ERROR,
       format: {
@@ -78,19 +78,19 @@ describe('함수형 API', () => {
       },
     });
 
-    warn('경고 메시지');
-    error('에러 메시지');
+    warn('warning message');
+    error('error message');
 
     expect(mockConsole.warn).not.toHaveBeenCalled();
     expect(mockConsole.error).toHaveBeenCalledWith(
       expect.anything(),
       expect.anything(),
       expect.stringContaining('[TEST-FUNC]'),
-      '에러 메시지'
+      'error message'
     );
   });
 
-  test('createLogger 함수가 새 로거 인스턴스를 생성해야 합니다', () => {
+  test('createLogger function should create a new logger instance', () => {
     const customLogger = createLogger({
       minLevel: LogLevel.DEBUG,
       format: {
@@ -98,28 +98,28 @@ describe('함수형 API', () => {
       },
     });
 
-    customLogger.debug('커스텀 디버그 메시지');
+    customLogger.debug('custom debug message');
 
     expect(mockConsole.debug).toHaveBeenCalledWith(
       expect.anything(),
       expect.anything(),
       expect.stringContaining('[CUSTOM]'),
-      '커스텀 디버그 메시지'
+      'custom debug message'
     );
 
-    // 기본 로거는 영향을 받지 않아야 함
-    debug('기본 디버그 메시지');
-    expect(mockConsole.debug).toHaveBeenCalledTimes(1); // 여전히 한 번만 호출됨
+    // Default logger should not be affected
+    debug('default debug message');
+    expect(mockConsole.debug).toHaveBeenCalledTimes(1); // Still only called once
   });
 
-  // createLogger 함수의 기본 옵션 테스트 (14번 라인 커버리지)
-  test('createLogger 함수는 옵션 없이도 호출할 수 있어야 합니다', () => {
-    // 옵션 없이 createLogger 호출
+  // Test for createLogger default options (line 14 coverage)
+  test('createLogger function should be callable without options', () => {
+    // Call createLogger without options
     const defaultLogger = createLogger();
 
-    // 기본 로거는 INFO 레벨부터 로깅
-    defaultLogger.debug('보이지 않는 메시지');
-    defaultLogger.info('보이는 메시지');
+    // Default logger logs from INFO level
+    defaultLogger.debug('invisible message');
+    defaultLogger.info('visible message');
 
     expect(mockConsole.debug).not.toHaveBeenCalled();
     expect(mockConsole.info).toHaveBeenCalled();

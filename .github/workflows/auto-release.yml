@@ -1,0 +1,65 @@
+name: Auto Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  create-release:
+    if: "${{github.event.pull_request.merged == true && startsWith(github.event.pull_request.title, 'release: v')}}"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from PR title
+        id: extract-version
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          VERSION="${PR_TITLE#release: v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version extracted: $VERSION"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.x
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Create Git tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v${{ steps.extract-version.outputs.VERSION }}" -m "Release v${{ steps.extract-version.outputs.VERSION }}"
+          git push origin "v${{ steps.extract-version.outputs.VERSION }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: 'v${{ steps.extract-version.outputs.VERSION }}'
+          tag_name: 'v${{ steps.extract-version.outputs.VERSION }}'
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

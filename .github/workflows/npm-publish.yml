@@ -1,0 +1,84 @@
+name: NPM 패키지 배포
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '배포 버전 (예: patch, minor, major, 또는 1.0.0)'
+        required: true
+        default: 'patch'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: PNPM 설치
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.x
+
+      - name: 의존성 설치
+        run: pnpm install
+
+      - name: 린트 실행
+        run: pnpm lint
+
+      - name: 테스트 실행
+        run: pnpm test
+
+      - name: 빌드 실행
+        run: pnpm build
+
+  publish-npm:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: PNPM 설치
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.x
+
+      - name: 의존성 설치
+        run: pnpm install
+
+      - name: 버전 업데이트 (workflow_dispatch 이벤트)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          npm version ${{ github.event.inputs.version }} -m "버전 업데이트 %s"
+
+      - name: 빌드 실행
+        run: pnpm build
+
+      - name: NPM 배포
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: 변경사항 푸시 (workflow_dispatch 이벤트)
+        if: github.event_name == 'workflow_dispatch'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

@@ -1,6 +1,6 @@
 {
-  "name": "console-logger",
-  "version": "1.0.0",
+  "name": "@99mini/console-logger",
+  "version": "1.0.0-rc.1",
   "description": "A flexible console logger library supporting both functional and object-oriented paradigms",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -29,6 +29,11 @@
   ],
   "author": "",
   "license": "MIT",
+  "homepage": "https://github.com/99mini/console-logger",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/99mini/console-logger.git"
+  },
   "packageManager": "pnpm@10.11.1",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",

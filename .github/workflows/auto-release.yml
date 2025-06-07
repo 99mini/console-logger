@@ -56,6 +56,7 @@ jobs:
           git push origin "v${{ steps.extract-version.outputs.VERSION }}"
 
       - name: Create GitHub Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           name: 'v${{ steps.extract-version.outputs.VERSION }}'
@@ -63,3 +64,10 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Trigger NPM Publish Workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: trigger-npm-publish
+          client-payload: '{"version": "${{ steps.extract-version.outputs.VERSION }}", "release_id": "${{ steps.create_release.outputs.id }}"}'

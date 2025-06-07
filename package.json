@@ -16,8 +16,9 @@
     "build:types": "tsc --emitDeclarationOnly",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:e2e": "sh ./e2e/run-e2e-tests.sh",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"e2e/**/*.ts\"",
     "prepare": "npm run build"
   },
   "keywords": [

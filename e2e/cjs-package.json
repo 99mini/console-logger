@@ -1,0 +1,11 @@
+{
+  "name": "console-logger-cjs-test",
+  "version": "1.0.0",
+  "description": "CJS test for @99mini/console-logger",
+  "scripts": {
+    "test": "node cjs-test.js"
+  },
+  "dependencies": {
+    "@99mini/console-logger": "latest"
+  }
+}

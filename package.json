@@ -1,6 +1,6 @@
 {
   "name": "@99mini/console-logger",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "A flexible console logger library supporting both functional and object-oriented paradigms",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

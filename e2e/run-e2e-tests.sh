@@ -53,5 +53,11 @@ else
   [ $CJS_RESULT -ne 0 ] && echo "   - CJS 테스트 실패"
 fi
 
+# 테스트 폴더 정리
+echo "\n[정리] 테스트 폴더 제거 중..."
+rm -rf esm-test
+rm -rf cjs-test
+echo "테스트 폴더가 제거되었습니다."
+
 # 원래 디렉토리로 복귀
 cd "$CURRENT_DIR"

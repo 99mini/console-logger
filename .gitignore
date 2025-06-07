@@ -1,8 +1,12 @@
+# Dependencies
 node_modules
 
+# System
 .DS_Store
 
 # Coverage
 coverage
 
-
+# Build
+build
+dist

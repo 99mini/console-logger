@@ -4,6 +4,7 @@
     "module": "esnext",
     "lib": ["es2018", "dom"],
     "declaration": true,
+    "declarationDir": "./dist/types",
     "sourceMap": true,
     "outDir": "./dist",
     "strict": true,

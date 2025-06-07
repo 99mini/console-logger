@@ -13,7 +13,7 @@
     "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
     "build:cjs": "rollup -c --environment FORMAT:cjs",
     "build:esm": "rollup -c --environment FORMAT:esm",
-    "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
+    "build:types": "tsc --emitDeclarationOnly",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",

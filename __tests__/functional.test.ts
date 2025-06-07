@@ -111,4 +111,17 @@ describe('함수형 API', () => {
     debug('기본 디버그 메시지');
     expect(mockConsole.debug).toHaveBeenCalledTimes(1); // 여전히 한 번만 호출됨
   });
+  
+  // createLogger 함수의 기본 옵션 테스트 (14번 라인 커버리지)
+  test('createLogger 함수는 옵션 없이도 호출할 수 있어야 합니다', () => {
+    // 옵션 없이 createLogger 호출
+    const defaultLogger = createLogger();
+    
+    // 기본 로거는 INFO 레벨부터 로깅
+    defaultLogger.debug('보이지 않는 메시지');
+    defaultLogger.info('보이는 메시지');
+    
+    expect(mockConsole.debug).not.toHaveBeenCalled();
+    expect(mockConsole.info).toHaveBeenCalled();
+  });
 });

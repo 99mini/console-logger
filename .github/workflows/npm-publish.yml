@@ -3,6 +3,8 @@ name: NPM Package Publish
 on:
   release:
     types: [created]
+  repository_dispatch:
+    types: [trigger-npm-publish]
   workflow_dispatch:
     inputs:
       version:
@@ -60,13 +62,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Update version (workflow_dispatch event)
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          npm version ${{ github.event.inputs.version }} -m "Bump version to %s"
 
       - name: Build package
         run: pnpm build

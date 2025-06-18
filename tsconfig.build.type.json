@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "e2e", "__tests__/**/*"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "declarationDir": "./dist/types",
+    "emitDeclarationOnly": true
+  }
+}

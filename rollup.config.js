@@ -14,7 +14,7 @@ const config = {
     nodeResolve(),
     commonjs(),
     typescript({
-      tsconfig: './tsconfig.json',
+      tsconfig: './tsconfig.build.source.json',
       sourceMap: true,
       inlineSources: true,
       declaration: false,

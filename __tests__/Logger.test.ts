@@ -496,7 +496,7 @@ describe('Logger', () => {
 
   test('should table work correctly', () => {
     const logger = new Logger();
-    const testData = { a: 1, b: 2 };
+    const testData = [{ a: 1, b: 2 }];
 
     // 기본 table 테스트
     logger.table(testData);

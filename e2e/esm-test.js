@@ -26,15 +26,19 @@ logger.debug('디버그 메시지 - 표시되어야 함');
 logger.info('정보 메시지');
 logger.warn('경고 메시지');
 logger.error('에러 메시지');
-logger.table({
-  name: 'John',
-  age: 30,
-});
-logger.table(
+logger.table([
   {
     name: 'John',
     age: 30,
   },
+]);
+logger.table(
+  [
+    {
+      name: 'John',
+      age: 30,
+    },
+  ],
   ['name']
 );
 

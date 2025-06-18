@@ -95,10 +95,12 @@ describe('Functional API', () => {
   });
 
   test('table function should log a table', () => {
-    const testData = {
-      name: 'John',
-      age: 30,
-    };
+    const testData = [
+      {
+        name: 'John',
+        age: 30,
+      },
+    ];
     table(testData);
 
     expect(mockConsole.table).toHaveBeenCalledWith(testData, undefined);

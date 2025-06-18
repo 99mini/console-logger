@@ -51,10 +51,12 @@ logger.table({
   age: 30,
 });
 logger.table(
-  {
-    name: 'John',
-    age: 30,
-  },
+  [
+    {
+      name: 'John',
+      age: 30,
+    },
+  ],
   ['name']
 );
 
@@ -68,10 +70,12 @@ logger.table({
   age: 30,
 });
 logger.table(
-  {
-    name: 'John',
-    age: 30,
-  },
+  [
+    {
+      name: 'John',
+      age: 30,
+    },
+  ],
   ['name']
 );
 

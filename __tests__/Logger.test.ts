@@ -136,6 +136,19 @@ describe('Logger', () => {
     );
   });
 
+  test('should warn when timer already exists', () => {
+    const logger = new Logger();
+
+    logger.time('test-timer');
+    logger.time('test-timer');
+
+    expect(mockConsole.warn).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.stringContaining("Timer 'test-timer' already exists")
+    );
+  });
+
   test('should be able to update options with configure method', () => {
     const logger = new Logger();
 

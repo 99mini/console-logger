@@ -15,13 +15,13 @@ JavaScript와 TypeScript 애플리케이션을 위한 유연한 콘솔 로깅 �
 
 ```bash
 # npm 사용
-npm install console-logger
+npm install @99mini/console-logger
 
 # yarn 사용
-yarn add console-logger
+yarn add @99mini/console-logger
 
 # pnpm 사용
-pnpm add console-logger
+pnpm add @99mini/console-logger
 ```
 
 ## 사용법
@@ -29,7 +29,7 @@ pnpm add console-logger
 ### 객체지향 접근 방식
 
 ```typescript
-import { Logger, LogLevel } from 'console-logger';
+import { Logger, LogLevel } from '@99mini/console-logger';
 
 // 새 로거 인스턴스 생성
 const logger = new Logger({
@@ -39,7 +39,7 @@ const logger = new Logger({
     level: true,
     prefix: 'APP',
     colors: true,
-  }
+  },
 });
 
 // 로그 메시지 출력
@@ -54,22 +54,14 @@ logger.setEnabled(false);
 logger.configure({
   format: {
     prefix: '새-접두사',
-  }
+  },
 });
 ```
 
 ### 함수형 접근 방식
 
 ```typescript
-import { 
-  debug, 
-  info, 
-  warn, 
-  error, 
-  setLevel, 
-  configure, 
-  LogLevel 
-} from 'console-logger';
+import { debug, info, warn, error, setLevel, configure, LogLevel } from '@99mini/console-logger';
 
 // 기본 로거를 사용하여 메시지 로깅
 info('애플리케이션이 시작되었습니다');
@@ -82,19 +74,19 @@ configure({
   format: {
     prefix: '함수-API',
     timestamp: true,
-  }
+  },
 });
 
 debug('이제 디버그 메시지가 표시됩니다');
 
 // 사용자 정의 로거 인스턴스 생성
-import { createLogger } from 'console-logger';
+import { createLogger } from '@99mini/console-logger';
 
 const customLogger = createLogger({
   minLevel: LogLevel.ERROR,
   format: {
     prefix: '사용자정의',
-  }
+  },
 });
 
 customLogger.error('이것은 심각한 오류입니다');
@@ -107,12 +99,12 @@ customLogger.error('이것은 심각한 오류입니다');
 ```typescript
 class Logger {
   constructor(options?: Partial<LoggerOptions>);
-  
+
   debug(message: unknown, ...args: unknown[]): void;
   info(message: unknown, ...args: unknown[]): void;
   warn(message: unknown, ...args: unknown[]): void;
   error(message: unknown, ...args: unknown[]): void;
-  
+
   setLevel(level: LogLevel): void;
   setEnabled(enabled: boolean): void;
   configure(options: Partial<LoggerOptions>): void;

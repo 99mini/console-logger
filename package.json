@@ -1,12 +1,14 @@
 {
   "name": "@99mini/console-logger",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0",
   "description": "A flexible console logger library supporting both functional and object-oriented paradigms",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "README.ko.md"
   ],
   "scripts": {
     "clean": "rimraf dist",
@@ -49,7 +51,7 @@
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
     "rollup": "^2.75.6",
-    "ts-jest": "^28.0.4",
+    "ts-jest": "^29.3.4",
     "tslib": "^2.4.0",
     "typescript": "^5.8.3"
   }

@@ -18,14 +18,25 @@ const logger = createLogger({
     timestamp: true,
     level: true,
     color: true,
-    prefix: 'ESM-TEST'
-  }
+    prefix: 'ESM-TEST',
+  },
 });
 
 logger.debug('디버그 메시지 - 표시되어야 함');
 logger.info('정보 메시지');
 logger.warn('경고 메시지');
 logger.error('에러 메시지');
+logger.table({
+  name: 'John',
+  age: 30,
+});
+logger.table(
+  {
+    name: 'John',
+    age: 30,
+  },
+  ['name']
+);
 
 // 로거 설정 변경 테스트
 console.log('\n3. 로거 설정 변경 테스트:');
@@ -34,11 +45,33 @@ logger.debug('디버그 메시지 - 표시되지 않아야 함');
 logger.info('정보 메시지 - 표시되지 않아야 함');
 logger.warn('경고 메시지 - 표시되어야 함');
 logger.error('에러 메시지 - 표시되어야 함');
+logger.table({
+  name: 'John',
+  age: 30,
+});
+logger.table(
+  {
+    name: 'John',
+    age: 30,
+  },
+  ['name']
+);
 
 // 로거 비활성화 테스트
 console.log('\n4. 로거 비활성화 테스트:');
 logger.setEnabled(false);
 logger.warn('경고 메시지 - 표시되지 않아야 함');
 logger.error('에러 메시지 - 표시되지 않아야 함');
+logger.table({
+  name: 'John',
+  age: 30,
+});
+logger.table(
+  {
+    name: 'John',
+    age: 30,
+  },
+  ['name']
+);
 
 console.log('\nESM 환경에서 console-logger 테스트 완료');

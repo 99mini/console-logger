@@ -7,9 +7,11 @@ import {
   info,
   warn,
   error,
+  table,
   resetDefaultLogger,
-  LogLevel,
-} from '../src';
+} from '../src/core/functional';
+
+import { LogLevel } from '../src/types';
 
 describe('Functional API', () => {
   let originalConsole: typeof console;
@@ -25,12 +27,14 @@ describe('Functional API', () => {
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
+      table: jest.fn(),
     };
 
     console.debug = mockConsole.debug;
     console.info = mockConsole.info;
     console.warn = mockConsole.warn;
     console.error = mockConsole.error;
+    console.table = mockConsole.table;
 
     // Reset default logger for test isolation
     resetDefaultLogger();
@@ -90,6 +94,19 @@ describe('Functional API', () => {
     );
   });
 
+  test('table function should log a table', () => {
+    const testData = {
+      name: 'John',
+      age: 30,
+    };
+    table(testData);
+
+    expect(mockConsole.table).toHaveBeenCalledWith(testData, undefined);
+
+    table(testData, ['name']);
+    expect(mockConsole.table).toHaveBeenCalledWith(testData, ['name']);
+  });
+
   test('createLogger function should create a new logger instance', () => {
     const customLogger = createLogger({
       minLevel: LogLevel.DEBUG,
@@ -112,7 +129,6 @@ describe('Functional API', () => {
     expect(mockConsole.debug).toHaveBeenCalledTimes(1); // Still only called once
   });
 
-  // Test for createLogger default options (line 14 coverage)
   test('createLogger function should be callable without options', () => {
     // Call createLogger without options
     const defaultLogger = createLogger();

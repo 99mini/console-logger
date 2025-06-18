@@ -76,6 +76,15 @@ export function error(message: unknown, ...args: unknown[]): void {
 }
 
 /**
+ * Log a table using the default logger
+ * @param data - The data to log
+ * @param properties - Optional properties to display
+ */
+export function table(data: unknown, properties?: string[]): void {
+  defaultLogger.table(data, properties);
+}
+
+/**
  * Reset the default logger to its initial state
  */
 export function resetDefaultLogger(): void {

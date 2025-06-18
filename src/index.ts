@@ -11,14 +11,4 @@ export * from './types';
 export { Logger } from './core/Logger';
 
 // Export functional API
-export {
-  createLogger,
-  configure,
-  setLevel,
-  setEnabled,
-  debug,
-  info,
-  warn,
-  error,
-  resetDefaultLogger,
-} from './core/functional';
+export * from './core/functional';

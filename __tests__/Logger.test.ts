@@ -203,7 +203,28 @@ describe('Logger', () => {
     logger.info('color test');
 
     // Log level with color codes
+
     expect(mockConsole.info).toHaveBeenCalledWith(expect.stringContaining('[INFO]'), 'color test');
+    // 실제 호출된 첫 번째 인수를 가져와서 색상 코드가 포함되어 있는지 확인
+    const firstArg = mockConsole.info.mock.calls[0][0];
+    expect(firstArg).toContain('\x1b[32m'); // Green color code
+    expect(firstArg).toContain('\x1b[0m'); // Reset color code
+  });
+
+  // Test for formatMessage with no colors
+  test('log level should be formatted without colors when disabled', () => {
+    const logger = new Logger({
+      format: {
+        timestamp: false,
+        level: true,
+        colors: false,
+      },
+    });
+
+    logger.info('no color test');
+
+    // Log level without color codes
+    expect(mockConsole.info).toHaveBeenCalledWith('[INFO]', 'no color test');
   });
 
   // Prefix test
@@ -259,10 +280,39 @@ describe('Logger', () => {
     expect(mockConsole.error).toHaveBeenCalled();
   });
 
-  // 새로 추가된 메서드 테스트
+  test('should compare log levels correctly', () => {
+    const logLevels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
 
-  // log 메서드 테스트
-  test('log 메서드가 올바르게 작동해야 함', () => {
+    for (const minLevel of logLevels) {
+      mockConsole.debug.mockClear();
+      mockConsole.info.mockClear();
+      mockConsole.warn.mockClear();
+      mockConsole.error.mockClear();
+
+      const logger = new Logger({
+        minLevel,
+        enabled: true,
+      });
+
+      logger.debug('debug message');
+      logger.info('info message');
+      logger.warn('warn message');
+      logger.error('error message');
+
+      for (const level of logLevels) {
+        const methodName = level.toLowerCase();
+        const consoleMock = mockConsole[methodName as keyof typeof mockConsole];
+
+        if (logLevels.indexOf(level) >= logLevels.indexOf(minLevel)) {
+          expect(consoleMock).toHaveBeenCalled();
+        } else {
+          expect(consoleMock).not.toHaveBeenCalled();
+        }
+      }
+    }
+  });
+
+  test('should log with correct format', () => {
     const logger = new Logger();
 
     logger.log('log message');
@@ -274,15 +324,13 @@ describe('Logger', () => {
     );
   });
 
-  // clear 메서드 테스트
-  test('clear 메서드가 올바르게 작동해야 함', () => {
+  test('clear method should work correctly', () => {
     const logger = new Logger();
 
     logger.clear();
 
     expect(mockConsole.clear).toHaveBeenCalled();
 
-    // 로깅이 비활성화된 경우 clear가 호출되지 않아야 함
     mockConsole.clear.mockClear();
     logger.setEnabled(false);
     logger.clear();
@@ -290,10 +338,9 @@ describe('Logger', () => {
     expect(mockConsole.clear).not.toHaveBeenCalled();
   });
 
-  // trace 메서드 테스트
-  test('trace 메서드가 올바르게 작동해야 함', () => {
+  test('should trace with correct format', () => {
     const logger = new Logger();
-    logger.setLevel(LogLevel.DEBUG); // trace는 DEBUG 레벨에서 작동
+    logger.setLevel(LogLevel.DEBUG);
 
     logger.trace('trace message');
 
@@ -303,7 +350,6 @@ describe('Logger', () => {
       'trace message'
     );
 
-    // 메시지 없이 호출
     mockConsole.trace.mockClear();
     logger.trace();
 
@@ -314,19 +360,15 @@ describe('Logger', () => {
     );
   });
 
-  // 타이머 관련 메서드 테스트
-  test('time, timeEnd, timeLog 메서드가 올바르게 작동해야 함', () => {
+  test('should time, timeEnd, timeLog work correctly', () => {
     const logger = new Logger();
 
-    // time 테스트
     logger.time('test-timer');
     expect(mockConsole.time).toHaveBeenCalledWith('test-timer');
 
-    // timeLog 테스트
     logger.timeLog('test-timer', 'additional info');
     expect(mockConsole.timeLog).toHaveBeenCalledWith('test-timer', 'additional info');
 
-    // timeEnd 테스트
     logger.timeEnd('test-timer');
     expect(mockConsole.timeEnd).toHaveBeenCalledWith('test-timer');
 
@@ -348,11 +390,9 @@ describe('Logger', () => {
     );
   });
 
-  // 카운터 관련 메서드 테스트
-  test('count, countReset 메서드가 올바르게 작동해야 함', () => {
+  test('should count, countReset work correctly', () => {
     const logger = new Logger();
 
-    // count 테스트 - 기본 레이블
     logger.count();
     expect(mockConsole.count).toHaveBeenCalledWith('default');
     expect(mockConsole.log).toHaveBeenCalledWith(
@@ -406,26 +446,30 @@ describe('Logger', () => {
       expect.anything(),
       expect.stringContaining("Counter 'non-existent-counter' does not exist")
     );
+
+    mockConsole.countReset.mockClear();
+    logger.setEnabled(false);
+    logger.countReset('test-counter');
+    expect(mockConsole.countReset).not.toHaveBeenCalled();
   });
 
-  // 그룹 관련 메서드 테스트
-  test('group, groupCollapsed, groupEnd 메서드가 올바르게 작동해야 함', () => {
+  test('should group, groupCollapsed, groupEnd work correctly', () => {
     const logger = new Logger();
 
-    // group 테스트
+    // group test
     logger.group('test-group');
     expect(mockConsole.group).toHaveBeenCalledWith('test-group');
 
-    // 추가 매개변수를 가진 group 테스트
+    // group with args test
     mockConsole.group.mockClear();
     logger.group('test-group-with-args', 'arg1', 'arg2');
     expect(mockConsole.group).toHaveBeenCalledWith('test-group-with-args', 'arg1', 'arg2');
 
-    // groupCollapsed 테스트
+    // groupCollapsed test
     logger.groupCollapsed('test-collapsed-group');
     expect(mockConsole.groupCollapsed).toHaveBeenCalledWith('test-collapsed-group');
 
-    // 추가 매개변수를 가진 groupCollapsed 테스트
+    // groupCollapsed with args test
     mockConsole.groupCollapsed.mockClear();
     logger.groupCollapsed('test-collapsed-with-args', 'arg1', 'arg2');
     expect(mockConsole.groupCollapsed).toHaveBeenCalledWith(
@@ -434,11 +478,11 @@ describe('Logger', () => {
       'arg2'
     );
 
-    // groupEnd 테스트
+    // groupEnd test
     logger.groupEnd();
     expect(mockConsole.groupEnd).toHaveBeenCalled();
 
-    // 로깅이 비활성화된 경우 그룹 메서드가 호출되지 않아야 함
+    // disabled group test
     mockConsole.group.mockClear();
     mockConsole.groupEnd.mockClear();
     logger.setEnabled(false);
@@ -450,8 +494,7 @@ describe('Logger', () => {
     expect(mockConsole.groupEnd).not.toHaveBeenCalled();
   });
 
-  // table 메서드 테스트
-  test('table 메서드가 올바르게 작동해야 함', () => {
+  test('should table work correctly', () => {
     const logger = new Logger();
     const testData = { a: 1, b: 2 };
 
@@ -472,8 +515,7 @@ describe('Logger', () => {
     expect(mockConsole.table).not.toHaveBeenCalled();
   });
 
-  // assert 메서드 테스트
-  test('assert 메서드가 올바르게 작동해야 함', () => {
+  test('assert method should work correctly', () => {
     const logger = new Logger();
 
     // 조건이 false인 경우 메시지 출력
@@ -497,20 +539,19 @@ describe('Logger', () => {
     expect(mockConsole.assert).not.toHaveBeenCalled();
   });
 
-  // dirxml 및 dir 메서드 테스트
-  test('dirxml 및 dir 메서드가 올바르게 작동해야 함', () => {
+  test('should work correctly dirxml and dir methods', () => {
     const logger = new Logger();
     const testObj = { a: 1, b: { c: 2 } };
 
-    // dirxml 테스트
+    // dirxml test
     logger.dirxml(testObj);
     expect(mockConsole.dirxml).toHaveBeenCalledWith(testObj);
 
-    // dir 테스트
+    // dir test
     logger.dir(testObj);
     expect(mockConsole.dir).toHaveBeenCalledWith(testObj, undefined);
 
-    // 옵션을 가진 dir 테스트
+    // dir with options test
     mockConsole.dir.mockClear();
     const options = { depth: 2, colors: true };
     logger.dir(testObj, options);

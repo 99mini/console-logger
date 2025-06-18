@@ -1,6 +1,6 @@
 {
   "name": "@99mini/console-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A flexible console logger library supporting both functional and object-oriented paradigms",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,7 +15,7 @@
     "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
     "build:cjs": "rollup -c --environment FORMAT:cjs",
     "build:esm": "rollup -c --environment FORMAT:esm",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build:types": "tsc --project tsconfig.build.type.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:e2e": "sh ./e2e/run-e2e-tests.sh",

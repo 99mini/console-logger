@@ -43,6 +43,7 @@ const logger = new Logger({
 });
 
 // 로그 메시지 출력
+logger.log('로그 메시지');
 logger.debug('디버그 메시지');
 logger.info('정보 메시지');
 logger.warn('경고 메시지');
@@ -61,9 +62,19 @@ logger.configure({
 ### 함수형 접근 방식
 
 ```typescript
-import { debug, info, warn, error, setLevel, configure, LogLevel } from '@99mini/console-logger';
+import {
+  log,
+  info,
+  debug,
+  warn,
+  error,
+  setLevel,
+  configure,
+  LogLevel,
+} from '@99mini/console-logger';
 
 // 기본 로거를 사용하여 메시지 로깅
+log('애플리케이션이 시작되었습니다');
 info('애플리케이션이 시작되었습니다');
 warn('더 이상 사용되지 않는 기능이 사용되었습니다');
 error('오류가 발생했습니다', new Error('문제가 발생했습니다'));
@@ -77,6 +88,7 @@ configure({
   },
 });
 
+log('이제 로그 메시지가 표시됩니다');
 debug('이제 디버그 메시지가 표시됩니다');
 
 // 사용자 정의 로거 인스턴스 생성
@@ -119,6 +131,7 @@ function configure(options: Partial<LoggerOptions>): void;
 function setLevel(level: LogLevel): void;
 function setEnabled(enabled: boolean): void;
 
+function log(message: unknown, ...args: unknown[]): void;
 function debug(message: unknown, ...args: unknown[]): void;
 function info(message: unknown, ...args: unknown[]): void;
 function warn(message: unknown, ...args: unknown[]): void;

@@ -43,8 +43,9 @@ const logger = new Logger({
 });
 
 // Log messages
-logger.debug('Debug message');
+logger.log('Log message');
 logger.info('Info message');
+logger.debug('Debug message');
 logger.warn('Warning message');
 logger.error('Error message', new Error('Something went wrong'));
 
@@ -61,12 +62,23 @@ logger.configure({
 ### Functional Approach
 
 ```typescript
-import { debug, info, warn, error, setLevel, configure, LogLevel } from '@99mini/console-logger';
+import {
+  log,
+  info,
+  debug,
+  warn,
+  error,
+  setLevel,
+  configure,
+  LogLevel,
+} from '@99mini/console-logger';
 
 // Log messages using the default logger
-info('Application started');
-warn('Deprecated feature used');
-error('Error occurred', new Error('Something went wrong'));
+log('Log message');
+info('Info message');
+debug('Debug message');
+warn('Warning message');
+error('Error message', new Error('Something went wrong'));
 
 // Configure the default logger
 setLevel(LogLevel.DEBUG);
@@ -101,6 +113,7 @@ class Logger {
   constructor(options?: Partial<LoggerOptions>);
 
   debug(message: unknown, ...args: unknown[]): void;
+  log(message: unknown, ...args: unknown[]): void;
   info(message: unknown, ...args: unknown[]): void;
   warn(message: unknown, ...args: unknown[]): void;
   error(message: unknown, ...args: unknown[]): void;
@@ -120,6 +133,7 @@ function setLevel(level: LogLevel): void;
 function setEnabled(enabled: boolean): void;
 
 function debug(message: unknown, ...args: unknown[]): void;
+function log(message: unknown, ...args: unknown[]): void;
 function info(message: unknown, ...args: unknown[]): void;
 function warn(message: unknown, ...args: unknown[]): void;
 function error(message: unknown, ...args: unknown[]): void;

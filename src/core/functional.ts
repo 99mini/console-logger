@@ -40,6 +40,38 @@ export function setEnabled(enabled: boolean): void {
 }
 
 /**
+ * Log a group using the default logger
+ * @param args - Arguments to pass to console.group
+ */
+export function group(...args: unknown[]): void {
+  defaultLogger.group(...args);
+}
+
+/**
+ * Log a collapsed group using the default logger
+ * @param args - Arguments to pass to console.groupCollapsed
+ */
+export function groupCollapsed(...args: unknown[]): void {
+  defaultLogger.groupCollapsed(...args);
+}
+
+/**
+ * End a group using the default logger
+ */
+export function groupEnd(): void {
+  defaultLogger.groupEnd();
+}
+
+/**
+ * Log a message using the default logger
+ * @param message - The message to log
+ * @param args - Additional arguments to log
+ */
+export function log(message: unknown, ...args: unknown[]): void {
+  defaultLogger.log(message, ...args);
+}
+
+/**
  * Log a debug message using the default logger
  * @param message - The message to log
  * @param args - Additional arguments to log

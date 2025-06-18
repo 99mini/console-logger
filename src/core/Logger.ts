@@ -1,6 +1,14 @@
 import { ILogger, LoggerOptions, LogLevel } from '../types';
 
 /**
+ * Timer storage for time, timeEnd, timeLog methods
+ */
+interface TimerInfo {
+  start: number;
+  label: string;
+}
+
+/**
  * Default logger options
  */
 const DEFAULT_OPTIONS: LoggerOptions = {
@@ -29,6 +37,9 @@ const COLORS = {
  */
 export class Logger implements ILogger {
   private options: LoggerOptions;
+  private timers: Map<string, TimerInfo>;
+  private counters: Map<string, number>;
+  private groupDepth: number;
 
   /**
    * Create a new Logger instance
@@ -43,6 +54,9 @@ export class Logger implements ILogger {
         ...options.format,
       },
     };
+    this.timers = new Map<string, TimerInfo>();
+    this.counters = new Map<string, number>();
+    this.groupDepth = 0;
   }
 
   /**
@@ -101,6 +115,17 @@ export class Logger implements ILogger {
     const currentLevelIndex = levels.indexOf(level);
 
     return currentLevelIndex >= minLevelIndex;
+  }
+
+  /**
+   * Log a message with no specific level
+   * @param message - The message to log
+   * @param args - Additional arguments to log
+   */
+  public log(message: unknown, ...args: unknown[]): void {
+    if (this.shouldLog(LogLevel.INFO)) {
+      console.log(...this.formatMessage(LogLevel.INFO, message, ...args));
+    }
   }
 
   /**
@@ -176,5 +201,194 @@ export class Logger implements ILogger {
         ...options.format,
       },
     };
+  }
+
+  /**
+   * Clear the console
+   */
+  public clear(): void {
+    if (this.options.enabled) {
+      console.clear();
+    }
+  }
+
+  /**
+   * Print a stack trace to the console
+   * @param message - Optional message to print
+   * @param args - Additional arguments to log
+   */
+  public trace(message?: unknown, ...args: unknown[]): void {
+    if (this.shouldLog(LogLevel.DEBUG)) {
+      console.trace(...this.formatMessage(LogLevel.DEBUG, message || 'Trace:', ...args));
+    }
+  }
+
+  /**
+   * Start a new timer under the given label
+   * @param label - The timer label
+   */
+  public time(label: string): void {
+    if (this.options.enabled) {
+      if (this.timers.has(label)) {
+        this.warn(`Timer '${label}' already exists`);
+        return;
+      }
+
+      this.timers.set(label, {
+        start: performance.now(),
+        label,
+      });
+      console.time(label);
+    }
+  }
+
+  /**
+   * Stop a timer and log the elapsed time
+   * @param label - The timer label
+   */
+  public timeEnd(label: string): void {
+    if (this.options.enabled) {
+      if (!this.timers.has(label)) {
+        this.warn(`Timer '${label}' does not exist`);
+        return;
+      }
+
+      const timer = this.timers.get(label);
+      if (!timer) return;
+
+      const elapsed = performance.now() - timer.start;
+      this.log(`${label}: ${elapsed.toFixed(3)}ms`);
+      this.timers.delete(label);
+      console.timeEnd(label);
+    }
+  }
+
+  /**
+   * Log the elapsed time of a timer without stopping it
+   * @param label - The timer label
+   */
+  public timeLog(label: string, ...args: unknown[]): void {
+    if (this.options.enabled) {
+      if (!this.timers.has(label)) {
+        this.warn(`Timer '${label}' does not exist`);
+        return;
+      }
+
+      const timer = this.timers.get(label);
+      if (!timer) return;
+
+      const elapsed = performance.now() - timer.start;
+      this.log(`${label}: ${elapsed.toFixed(3)}ms`, ...args);
+      console.timeLog(label, ...args);
+    }
+  }
+
+  /**
+   * Create a new counter with the given label
+   * @param label - The counter label
+   */
+  public count(label = 'default'): void {
+    if (this.options.enabled) {
+      const currentCount = this.counters.get(label) || 0;
+      const newCount = currentCount + 1;
+      this.counters.set(label, newCount);
+
+      this.log(`${label}: ${newCount}`);
+      console.count(label);
+    }
+  }
+
+  /**
+   * Reset a counter
+   * @param label - The counter label
+   */
+  public countReset(label = 'default'): void {
+    if (this.options.enabled) {
+      if (!this.counters.has(label)) {
+        this.warn(`Counter '${label}' does not exist`);
+        return;
+      }
+
+      this.counters.set(label, 0);
+      console.countReset(label);
+    }
+  }
+
+  /**
+   * Start a group of console messages
+   * @param label - The group label
+   * @param args - Additional arguments
+   */
+  public group(label?: unknown, ...args: unknown[]): void {
+    if (this.options.enabled) {
+      this.groupDepth++;
+      console.group(label, ...args);
+    }
+  }
+
+  /**
+   * Start a collapsed group of console messages
+   * @param label - The group label
+   * @param args - Additional arguments
+   */
+  public groupCollapsed(label?: unknown, ...args: unknown[]): void {
+    if (this.options.enabled) {
+      this.groupDepth++;
+      console.groupCollapsed(label, ...args);
+    }
+  }
+
+  /**
+   * End the current group
+   */
+  public groupEnd(): void {
+    if (this.options.enabled && this.groupDepth > 0) {
+      this.groupDepth--;
+      console.groupEnd();
+    }
+  }
+
+  /**
+   * Print a table of the given data
+   * @param tabularData - The data to display in a table
+   * @param properties - Optional array of properties to include
+   */
+  public table(tabularData: unknown, properties?: readonly string[]): void {
+    if (this.options.enabled) {
+      console.table(tabularData, properties as string[] | undefined);
+    }
+  }
+
+  /**
+   * Assert that a condition is true
+   * @param condition - The condition to assert
+   * @param message - The message to log if the assertion fails
+   * @param args - Additional arguments
+   */
+  public assert(condition?: boolean, message?: string, ...args: unknown[]): void {
+    if (this.options.enabled) {
+      console.assert(condition, message, ...args);
+    }
+  }
+
+  /**
+   * Display an XML/HTML element in the console
+   * @param value - The element to display
+   */
+  public dirxml(value: unknown): void {
+    if (this.options.enabled) {
+      console.dirxml(value);
+    }
+  }
+
+  /**
+   * Display an object in the console
+   * @param obj - The object to display
+   * @param options - Display options
+   */
+  public dir(obj: unknown, options?: object): void {
+    if (this.options.enabled) {
+      console.dir(obj, options);
+    }
   }
 }

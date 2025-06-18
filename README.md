@@ -15,13 +15,13 @@ A flexible console logging library for JavaScript and TypeScript applications th
 
 ```bash
 # Using npm
-npm install console-logger
+npm install @99mini/console-logger
 
 # Using yarn
-yarn add console-logger
+yarn add @99mini/console-logger
 
 # Using pnpm
-pnpm add console-logger
+pnpm add @99mini/console-logger
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ pnpm add console-logger
 ### Object-Oriented Approach
 
 ```typescript
-import { Logger, LogLevel } from 'console-logger';
+import { Logger, LogLevel } from '@99mini/console-logger';
 
 // Create a new logger instance
 const logger = new Logger({
@@ -39,7 +39,7 @@ const logger = new Logger({
     level: true,
     prefix: 'APP',
     colors: true,
-  }
+  },
 });
 
 // Log messages
@@ -54,22 +54,14 @@ logger.setEnabled(false);
 logger.configure({
   format: {
     prefix: 'NEW-PREFIX',
-  }
+  },
 });
 ```
 
 ### Functional Approach
 
 ```typescript
-import { 
-  debug, 
-  info, 
-  warn, 
-  error, 
-  setLevel, 
-  configure, 
-  LogLevel 
-} from 'console-logger';
+import { debug, info, warn, error, setLevel, configure, LogLevel } from '@99mini/console-logger';
 
 // Log messages using the default logger
 info('Application started');
@@ -82,19 +74,19 @@ configure({
   format: {
     prefix: 'FUNC-API',
     timestamp: true,
-  }
+  },
 });
 
 debug('Debug message now visible');
 
 // Create a custom logger instance
-import { createLogger } from 'console-logger';
+import { createLogger } from '@99mini/console-logger';
 
 const customLogger = createLogger({
   minLevel: LogLevel.ERROR,
   format: {
     prefix: 'CUSTOM',
-  }
+  },
 });
 
 customLogger.error('This is a critical error');
@@ -107,12 +99,12 @@ customLogger.error('This is a critical error');
 ```typescript
 class Logger {
   constructor(options?: Partial<LoggerOptions>);
-  
+
   debug(message: unknown, ...args: unknown[]): void;
   info(message: unknown, ...args: unknown[]): void;
   warn(message: unknown, ...args: unknown[]): void;
   error(message: unknown, ...args: unknown[]): void;
-  
+
   setLevel(level: LogLevel): void;
   setEnabled(enabled: boolean): void;
   configure(options: Partial<LoggerOptions>): void;
